@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vendingmachine.controller.TransactionHistoryController" prefHeight="600.0" prefWidth="900.0" styleClass="admin-root">
+    <top>
+        <VBox styleClass="admin-header">
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="admin-header-container">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Riwayat Transaksi" styleClass="admin-title"/>
+                <HBox HBox.hgrow="ALWAYS"/>
+                <Button fx:id="backButton" text="Kembali" styleClass="back-button" onAction="#handleBackButton"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <VBox spacing="20" styleClass="admin-content">
+            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+            
+            <!-- Transaction Statistics -->
+            <HBox spacing="30" alignment="CENTER">
+                <VBox alignment="CENTER" styleClass="stat-card">
+                    <Label fx:id="totalTransactionsLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Total Transaksi" styleClass="stat-label"/>
+                </VBox>
+                <VBox alignment="CENTER" styleClass="stat-card">
+                    <Label fx:id="totalRevenueLabel" text="Rp 0" styleClass="stat-number"/>
+                    <Label text="Total Pendapatan" styleClass="stat-label"/>
+                </VBox>
+                <VBox alignment="CENTER" styleClass="stat-card">
+                    <Label fx:id="successfulTransactionsLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Transaksi Berhasil" styleClass="stat-label"/>
+                </VBox>
+            </HBox>
+            
+            <!-- Transaction Table -->
+            <TableView fx:id="transactionTable" styleClass="transaction-table">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID Transaksi" prefWidth="120"/>
+                    <TableColumn fx:id="itemColumn" text="Barang" prefWidth="150"/>
+                    <TableColumn fx:id="priceColumn" text="Harga Satuan" prefWidth="120"/>
+                    <TableColumn fx:id="quantityColumn" text="Kuantitas" prefWidth="100"/>
+                    <TableColumn fx:id="totalColumn" text="Total Harga" prefWidth="120"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="dateColumn" text="Tanggal &amp; Waktu" prefWidth="180"/>
+                </columns>
+            </TableView>
+            
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="refreshButton" text="Refresh" styleClass="action-button" onAction="#handleRefresh"/>
+                <Button fx:id="clearHistoryButton" text="Hapus Semua Riwayat" styleClass="danger-button" onAction="#handleClearHistory"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

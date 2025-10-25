@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vendingmachine.controller.TransactionDetailController" styleClass="transaction-detail-container" spacing="20" alignment="CENTER" prefWidth="400" prefHeight="500">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10">
+        <Label text="✅ Pembayaran Berhasil!" styleClass="success-title"/>
+        <Label text="Detail Transaksi" styleClass="detail-subtitle"/>
+    </VBox>
+    
+    <Separator styleClass="detail-separator"/>
+    
+    <!-- Product Image -->
+    <ImageView fx:id="productImageView" fitHeight="120" fitWidth="120" preserveRatio="true" styleClass="detail-product-image"/>
+    
+    <!-- Transaction Details -->
+    <VBox spacing="15" alignment="CENTER" styleClass="detail-info-container">
+        
+        <!-- Transaction ID -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="ID Transaksi:" styleClass="detail-label"/>
+            <Label fx:id="transactionIdLabel" text="-" styleClass="detail-value"/>
+        </HBox>
+        
+        <!-- Product Name -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Produk:" styleClass="detail-label"/>
+            <Label fx:id="productNameLabel" text="-" styleClass="detail-value-highlight"/>
+        </HBox>
+        
+        <!-- Unit Price -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Harga Satuan:" styleClass="detail-label"/>
+            <Label fx:id="unitPriceLabel" text="-" styleClass="detail-value"/>
+        </HBox>
+        
+        <!-- Quantity -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Kuantitas:" styleClass="detail-label"/>
+            <Label fx:id="quantityLabel" text="-" styleClass="detail-value"/>
+        </HBox>
+        
+        <Separator styleClass="detail-separator"/>
+        
+        <!-- Total Price -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Total Pembayaran:" styleClass="detail-label-total"/>
+            <Label fx:id="totalPriceLabel" text="-" styleClass="detail-value-total"/>
+        </HBox>
+        
+        <!-- Transaction Time -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Waktu Transaksi:" styleClass="detail-label"/>
+            <Label fx:id="transactionTimeLabel" text="-" styleClass="detail-value"/>
+        </HBox>
+        
+        <!-- Status -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Status:" styleClass="detail-label"/>
+            <Label fx:id="statusLabel" text="BERHASIL" styleClass="detail-status-success"/>
+        </HBox>
+        
+    </VBox>
+    
+    <Separator styleClass="detail-separator"/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button fx:id="printReceiptButton" text="Cetak Struk" styleClass="print-button" onAction="#handlePrintReceipt"/>
+        <Button fx:id="closeButton" text="Tutup" styleClass="close-button" onAction="#handleClose"/>
+    </HBox>
+    
+    <!-- Footer Message -->
+    <Label text="Terima kasih telah berbelanja di PENShop!" styleClass="footer-message"/>
+    
+</VBox>

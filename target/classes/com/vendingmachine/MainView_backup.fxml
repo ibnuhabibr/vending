@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.vendingmachine.controller.AdminController"
+            prefHeight="700.0" prefWidth="900.0" styleClass="admin-root">
+
+    <!-- Header -->
+    <top>
+        <VBox styleClass="admin-header">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="⚙ Admin Panel - Manajemen Produk" styleClass="admin-title"/>
+            <Label text="Kelola produk vending machine Anda" styleClass="admin-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- Center - Table and Form -->
+    <center>
+        <VBox spacing="20" styleClass="admin-content">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Product Table -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="Daftar Produk" styleClass="section-title"/>
+
+                <TableView fx:id="productTable" VBox.vgrow="ALWAYS" styleClass="product-table">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
+                        <TableColumn fx:id="nameColumn" text="Nama Produk" prefWidth="180"/>
+                        <TableColumn fx:id="priceColumn" text="Harga" prefWidth="120"/>
+                        <TableColumn fx:id="stockColumn" text="Stok" prefWidth="80"/>
+                        <TableColumn fx:id="imagePathColumn" text="Path Gambar" prefWidth="300"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Form Input -->
+            <VBox spacing="15" styleClass="form-container">
+                <Label text="Form Data Produk" styleClass="section-title"/>
+
+                <GridPane hgap="15" vgap="12" styleClass="input-grid">
+                    <!-- Row 1 -->
+                    <Label text="ID Barang:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           styleClass="form-label"/>
+                    <TextField fx:id="idField" promptText="Contoh: P001"
+                              GridPane.columnIndex="1" GridPane.rowIndex="0"
+                              styleClass="form-field" prefWidth="200"/>
+
+                    <Label text="Nama Barang:" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                           styleClass="form-label">
+                        <GridPane.margin>
+                            <Insets left="20"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="nameField" promptText="Contoh: Kopi Hitam"
+                              GridPane.columnIndex="3" GridPane.rowIndex="0"
+                              styleClass="form-field" prefWidth="200"/>
+
+                    <!-- Row 2 -->
+                    <Label text="Harga (Rp):" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                           styleClass="form-label"/>
+                    <TextField fx:id="priceField" promptText="Contoh: 10000"
+                              GridPane.columnIndex="1" GridPane.rowIndex="1"
+                              styleClass="form-field"/>
+
+                    <Label text="Stok:" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                           styleClass="form-label">
+                        <GridPane.margin>
+                            <Insets left="20"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="stockField" promptText="Contoh: 15"
+                              GridPane.columnIndex="3" GridPane.rowIndex="1"
+                              styleClass="form-field"/>
+
+                    <!-- Row 3 -->
+                    <Label text="Path Gambar:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+                           styleClass="form-label"/>
+                    <TextField fx:id="imagePathField" promptText="/images/produk.png"
+                              GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="2"
+                              styleClass="form-field" prefWidth="420"/>
+                    <Button fx:id="browseButton" text="Browse..."
+                           GridPane.columnIndex="3" GridPane.rowIndex="2"
+                           styleClass="browse-button" onAction="#handleBrowseButton"/>
+                </GridPane>
+
+                <!-- Action Buttons -->
+                <HBox spacing="10" alignment="CENTER">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+
+                    <Button fx:id="addButton" text="➕ Tambah Barang"
+                            styleClass="action-button, add-button"
+                            onAction="#handleAddButton" prefWidth="150"/>
+
+                    <Button fx:id="updateButton" text="✏ Update Barang"
+                            styleClass="action-button, update-button"
+                            onAction="#handleUpdateButton" prefWidth="150"/>
+
+                    <Button fx:id="deleteButton" text="🗑 Hapus Barang"
+                            styleClass="action-button, delete-button"
+                            onAction="#handleDeleteButton" prefWidth="150"/>
+
+                    <Button fx:id="clearButton" text="🔄 Clear Form"
+                            styleClass="action-button, clear-button"
+                            onAction="#handleClearButton" prefWidth="150"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
