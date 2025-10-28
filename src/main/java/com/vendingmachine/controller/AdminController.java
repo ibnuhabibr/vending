@@ -22,11 +22,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 
 /**
- * Controller untuk tampilan Admin (AdminView).
- * Mengelola operasi CRUD untuk data barang.
- *
- * @author Senior Java Developer
+ * Controller untuk panel administrasi vending machine.
+ * Mengelola operasi CRUD (Create, Read, Update, Delete) untuk produk
+ * dan menyediakan antarmuka untuk manajemen inventori.
+ * 
+ * Fitur yang dikelola:
+ * - Tampilan tabel produk dengan informasi lengkap
+ * - Form input untuk menambah/edit produk
+ * - Validasi input data produk
+ * - Konfirmasi untuk operasi update dan delete
+ * - Refresh otomatis tabel setelah perubahan data
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 1.0
+ * @since 2024
  */
 public class AdminController {
 
@@ -84,21 +93,21 @@ public class AdminController {
     private NumberFormat currencyFormat;
 
     /**
-     * Inisialisasi controller.
+     * Inisialisasi controller dan setup tabel.
      * Dipanggil otomatis setelah FXML dimuat.
      */
     @FXML
     public void initialize() {
         currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
-        // Konfigurasi kolom tabel
+        // Konfigurasi kolom tabel untuk menampilkan data barang
         idColumn.setCellValueFactory(new PropertyValueFactory<>("idBarang"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("namaBarang"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("hargaBarang"));
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stokSekarang"));
         imagePathColumn.setCellValueFactory(new PropertyValueFactory<>("pathGambar"));
 
-        // Format kolom harga
+        // Format kolom harga untuk menampilkan mata uang
         priceColumn.setCellFactory(column -> new TableCell<Barang, Double>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
@@ -111,7 +120,7 @@ public class AdminController {
             }
         });
 
-        // Event listener untuk seleksi tabel
+        // Event listener untuk seleksi tabel - mengisi form saat item dipilih
         productTable.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
@@ -125,9 +134,9 @@ public class AdminController {
     }
 
     /**
-     * Mengatur instance MesinPenjual dan memuat data.
+     * Mengatur instance MesinPenjual dan memuat data ke tabel.
      *
-     * @param mesinPenjual Instance MesinPenjual
+     * @param mesinPenjual Instance MesinPenjual yang berisi data barang
      */
     public void setMesinPenjual(MesinPenjual mesinPenjual) {
         this.mesinPenjual = mesinPenjual;
@@ -135,7 +144,7 @@ public class AdminController {
     }
 
     /**
-     * Mengatur reference ke MainController untuk refresh.
+     * Mengatur referensi ke MainController untuk refresh tampilan.
      *
      * @param mainController Instance MainController
      */
@@ -144,7 +153,7 @@ public class AdminController {
     }
 
     /**
-     * Memuat data barang ke tabel.
+     * Memuat data barang dari MesinPenjual ke tabel.
      */
     private void loadTableData() {
         barangList.clear();
@@ -153,9 +162,9 @@ public class AdminController {
     }
 
     /**
-     * Mengisi form dengan data barang yang dipilih.
+     * Mengisi field input dengan data barang yang dipilih.
      *
-     * @param barang Barang yang dipilih
+     * @param barang Objek Barang yang datanya akan ditampilkan di field
      */
     private void populateFields(Barang barang) {
         idField.setText(barang.getIdBarang());
@@ -166,7 +175,8 @@ public class AdminController {
     }
 
     /**
-     * Menangani tombol Tambah Barang.
+     * Menangani aksi tombol tambah barang baru.
+     * Memvalidasi input dan menambahkan barang ke sistem.
      */
     @FXML
     private void handleAddButton() {
@@ -207,10 +217,12 @@ public class AdminController {
     }
 
     /**
-     * Menangani tombol Update Barang.
+     * Menangani aksi tombol update barang yang dipilih.
+     * Memvalidasi input dan memperbarui data barang.
      */
     @FXML
     private void handleUpdateButton() {
+        // Mendapatkan barang yang dipilih dari tabel
         Barang selectedBarang = productTable.getSelectionModel().getSelectedItem();
 
         if (selectedBarang == null) {
@@ -220,12 +232,12 @@ public class AdminController {
         }
 
         try {
-            // Validasi input
+            // Validasi input sebelum melakukan update
             if (!validateInput()) {
                 return;
             }
 
-            // Konfirmasi update
+            // Konfirmasi dari user sebelum melakukan perubahan
             Optional<ButtonType> result = showConfirmation(
                 "Konfirmasi Update",
                 "Apakah Anda yakin ingin mengupdate barang ini?",
@@ -233,7 +245,7 @@ public class AdminController {
             );
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                // Buat objek barang dengan data baru
+                // Membuat objek barang baru dengan data dari form
                 Barang dataBaru = new Barang(
                     idField.getText().trim(),
                     nameField.getText().trim(),
@@ -242,30 +254,33 @@ public class AdminController {
                     imagePathField.getText().trim()
                 );
 
-                // Update barang
+                // Melakukan update barang melalui MesinPenjual
                 mesinPenjual.updateBarang(selectedBarang.getIdBarang(), dataBaru);
 
-                // Refresh tabel
+                // Refresh tabel untuk menampilkan data terbaru
                 loadTableData();
 
-                // Clear form
+                // Bersihkan form setelah update berhasil
                 clearFields();
 
-                // Tampilkan pesan sukses
+                // Tampilkan pesan sukses kepada user
                 showAlert(Alert.AlertType.INFORMATION, "Sukses",
                          "Barang berhasil diupdate!");
             }
 
         } catch (NumberFormatException e) {
+            // Handle error jika format angka tidak valid
             showAlert(Alert.AlertType.ERROR, "Error",
                      "Format harga atau stok tidak valid!");
         } catch (IllegalArgumentException e) {
+            // Handle error dari validasi business logic
             showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
     }
 
     /**
-     * Menangani tombol Hapus Barang.
+     * Menangani aksi tombol hapus barang yang dipilih.
+     * Menampilkan konfirmasi sebelum menghapus.
      */
     @FXML
     private void handleDeleteButton() {
@@ -306,7 +321,8 @@ public class AdminController {
     }
 
     /**
-     * Menangani tombol Browse untuk memilih gambar.
+     * Menangani aksi tombol browse untuk memilih file gambar.
+     * Membuka FileChooser untuk memilih gambar produk.
      */
     @FXML
     private void handleBrowseButton() {
@@ -319,7 +335,7 @@ public class AdminController {
         File selectedFile = fileChooser.showOpenDialog(browseButton.getScene().getWindow());
 
         if (selectedFile != null) {
-            // Set path relatif untuk resources
+            // Atur path relatif untuk resources
             String relativePath = "/images/" + selectedFile.getName();
             imagePathField.setText(relativePath);
 
@@ -329,7 +345,7 @@ public class AdminController {
     }
 
     /**
-     * Menangani tombol Clear untuk membersihkan form.
+     * Menangani aksi tombol clear untuk mengosongkan semua field.
      */
     @FXML
     private void handleClearButton() {
@@ -349,9 +365,9 @@ public class AdminController {
     }
 
     /**
-     * Validasi input form.
+     * Validasi input dari semua field.
      *
-     * @return true jika valid, false jika tidak
+     * @return true jika semua input valid, false jika ada yang tidak valid
      */
     private boolean validateInput() {
         if (idField.getText().trim().isEmpty()) {
@@ -445,3 +461,5 @@ public class AdminController {
         return alert.showAndWait();
     }
 }
+
+

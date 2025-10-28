@@ -17,8 +17,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 /**
- * Controller untuk mengelola tampilan detail transaksi setelah pembayaran berhasil.
- * Menampilkan informasi lengkap tentang transaksi yang baru saja dilakukan.
+ * Controller untuk menampilkan detail transaksi individual.
+ * Menampilkan informasi lengkap tentang satu transaksi tertentu
+ * termasuk data produk, waktu, dan status transaksi.
+ * 
+ * Fitur yang dikelola:
+ * - Tampilan detail transaksi lengkap
+ * - Informasi produk yang dibeli
+ * - Waktu dan tanggal transaksi
+ * - Status transaksi
+ * - Navigasi kembali ke riwayat transaksi
+ * 
+ * @author Tim Pengembang Vending Machine
+ * @version 1.0
+ * @since 2024
  */
 public class TransactionDetailController implements Initializable {
 
@@ -36,13 +48,20 @@ public class TransactionDetailController implements Initializable {
     private Transaksi transaksi;
     private Barang barang;
 
+    /**
+     * Inisialisasi controller dan setup komponen UI.
+     * Dipanggil otomatis setelah FXML dimuat.
+     *
+     * @param location URL lokasi FXML
+     * @param resources ResourceBundle untuk lokalisasi
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Setup initial state
+        // Inisialisasi state awal
     }
 
     /**
-     * Set data transaksi yang akan ditampilkan.
+     * Mengatur data transaksi yang akan ditampilkan di UI.
      *
      * @param transaksi Objek transaksi yang akan ditampilkan
      * @param barang Objek barang untuk menampilkan gambar produk
@@ -55,50 +74,53 @@ public class TransactionDetailController implements Initializable {
 
     /**
      * Mengisi detail transaksi ke dalam komponen UI.
+     * Menampilkan ID transaksi, detail produk, waktu, status, dan gambar.
      */
     private void populateTransactionDetails() {
         if (transaksi == null) return;
 
-        // Set transaction ID
+        // Atur ID transaksi
         transactionIdLabel.setText(transaksi.getIdTransaksi());
 
-        // Set product details
+        // Atur detail produk
         productNameLabel.setText(transaksi.getBarangYangDibeli().getNamaBarang());
         unitPriceLabel.setText(formatCurrency(transaksi.getBarangYangDibeli().getHargaBarang()));
         quantityLabel.setText(String.valueOf(transaksi.getKuantitas()));
         totalPriceLabel.setText(formatCurrency(transaksi.getTotalHarga()));
 
-        // Set transaction time
+        // Atur waktu transaksi
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         transactionTimeLabel.setText(transaksi.getWaktuTransaksi().format(formatter));
 
-        // Set status
+        // Atur status
         statusLabel.setText(transaksi.getStatus().getDisplayName());
 
-        // Set product image
+        // Atur gambar produk
         loadProductImage();
     }
 
     /**
-     * Load gambar produk ke ImageView.
+     * Memuat gambar produk ke ImageView.
+     * Mencoba memuat dari resources terlebih dahulu, kemudian dari file system.
+     * Jika gagal, akan memuat gambar default.
      */
     private void loadProductImage() {
         try {
             String imagePath = barang.getPathGambar();
             
-            // Try to load from resources first
+            // Coba muat dari resources terlebih dahulu
             URL imageUrl = getClass().getResource("/images/" + imagePath);
             if (imageUrl != null) {
                 Image image = new Image(imageUrl.toExternalForm());
                 productImageView.setImage(image);
             } else {
-                // Try to load from file system
+                // Coba muat dari file system
                 File imageFile = new File(imagePath);
                 if (imageFile.exists()) {
                     Image image = new Image(imageFile.toURI().toString());
                     productImageView.setImage(image);
                 } else {
-                    // Load default image
+                    // Muat gambar default
                     loadDefaultImage();
                 }
             }
@@ -109,7 +131,8 @@ public class TransactionDetailController implements Initializable {
     }
 
     /**
-     * Load gambar default jika gambar produk tidak ditemukan.
+     * Memuat gambar default jika gambar produk tidak ditemukan.
+     * Digunakan sebagai fallback ketika gambar produk tidak tersedia.
      */
     private void loadDefaultImage() {
         try {
@@ -124,17 +147,18 @@ public class TransactionDetailController implements Initializable {
     }
 
     /**
-     * Format mata uang Indonesia.
+     * Memformat angka menjadi format mata uang Rupiah.
      *
      * @param amount Jumlah yang akan diformat
-     * @return String format mata uang
+     * @return String dalam format mata uang Rupiah
      */
     private String formatCurrency(double amount) {
         return String.format("Rp %.0f", amount);
     }
 
     /**
-     * Handle tombol cetak struk.
+     * Menangani aksi tombol cetak struk.
+     * Menampilkan dialog dengan detail struk pembayaran.
      */
     @FXML
     private void handlePrintReceipt() {
@@ -152,9 +176,10 @@ public class TransactionDetailController implements Initializable {
     }
 
     /**
-     * Generate text untuk struk pembayaran.
+     * Menghasilkan teks untuk struk pembayaran.
+     * Berisi detail lengkap transaksi dalam format yang mudah dibaca.
      *
-     * @return String berisi detail struk
+     * @return String berisi detail struk pembayaran
      */
     private String generateReceiptText() {
         if (transaksi == null) return "";
@@ -188,7 +213,8 @@ public class TransactionDetailController implements Initializable {
     }
 
     /**
-     * Handle tombol tutup dialog.
+     * Menangani aksi tombol tutup dialog.
+     * Menutup window detail transaksi.
      */
     @FXML
     private void handleClose() {

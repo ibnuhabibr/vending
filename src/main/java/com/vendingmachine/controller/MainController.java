@@ -27,11 +27,20 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * Controller untuk tampilan utama pembeli (MainView).
- * Mengelola tampilan produk dan interaksi pembelian.
- *
- * @author Senior Java Developer
+ * Controller utama untuk tampilan vending machine.
+ * Mengelola interaksi pengguna dengan produk, proses pembelian,
+ * dan navigasi ke fitur-fitur lain seperti admin dan riwayat transaksi.
+ * 
+ * Fitur yang dikelola:
+ * - Tampilan grid produk dengan gambar dan informasi
+ * - Proses pembelian dengan validasi stok
+ * - Dialog pembayaran QRIS
+ * - Navigasi ke panel admin dan riwayat transaksi
+ * - Refresh otomatis data produk
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 1.0
+ * @since 2024
  */
 public class MainController {
 
@@ -52,7 +61,7 @@ public class MainController {
      */
     @FXML
     public void initialize() {
-        // Konfigurasi TilePane
+        // Konfigurasi TilePane untuk menampilkan produk
         productTilePane.setHgap(15);
         productTilePane.setVgap(15);
         productTilePane.setPadding(new Insets(20));
@@ -95,7 +104,7 @@ public class MainController {
         card.setPrefWidth(200);
         card.setPrefHeight(280);
 
-        // Image
+        // Gambar produk
         ImageView imageView = new ImageView();
         imageView.setFitWidth(150);
         imageView.setFitHeight(150);
@@ -107,14 +116,14 @@ public class MainController {
                 Image image = new Image(imageStream);
                 imageView.setImage(image);
             } else {
-                // Default image jika tidak ditemukan
+                // Gambar default jika tidak ditemukan
                 imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
             }
         } catch (Exception e) {
             System.err.println("Error loading image: " + barang.getPathGambar());
         }
 
-        // Nama Produk
+        // Label nama produk
         Label nameLabel = new Label(barang.getNamaBarang());
         nameLabel.getStyleClass().add("product-name");
         nameLabel.setWrapText(true);
@@ -122,21 +131,21 @@ public class MainController {
         nameLabel.setAlignment(Pos.CENTER);
         nameLabel.setStyle("-fx-alignment: center;");
 
-        // Harga
+        // Label harga
         Label priceLabel = new Label(formatCurrency(barang.getHargaBarang()));
         priceLabel.getStyleClass().add("product-price");
 
-        // Stok
+        // Label stok
         Label stockLabel = new Label("Stok: " + barang.getStokSekarang());
         stockLabel.getStyleClass().add("product-stock");
 
-        // Tombol Beli
+        // Tombol beli
         Button buyButton = new Button("BELI");
         buyButton.getStyleClass().add("buy-button");
         buyButton.setMaxWidth(Double.MAX_VALUE);
         buyButton.setOnAction(e -> handleBuyButton(barang));
 
-        // Disable tombol jika stok habis
+        // Nonaktifkan tombol jika stok habis
         if (barang.getStokSekarang() <= 0) {
             buyButton.setDisable(true);
             buyButton.setText("STOK HABIS");
@@ -180,32 +189,35 @@ public class MainController {
      * @param barang Barang yang dibeli
      */
     private void showQRCodePayment(Barang barang) {
+        // Membuat stage baru untuk dialog pembayaran QRIS
         Stage qrStage = new Stage();
         qrStage.setTitle("Pembayaran QRIS - Vending Machine");
-        qrStage.initModality(Modality.APPLICATION_MODAL);
+        qrStage.initModality(Modality.APPLICATION_MODAL); // Modal agar user fokus pada pembayaran
 
+        // Container utama untuk layout pembayaran
         VBox qrBox = new VBox(20);
         qrBox.setAlignment(Pos.CENTER);
         qrBox.setPadding(new Insets(40));
         qrBox.getStyleClass().add("qr-container");
 
-        // Title
+        // Judul dialog pembayaran
         Label titleLabel = new Label("Scan QRIS untuk Pembayaran");
         titleLabel.getStyleClass().add("qr-title");
 
-        // Info produk
+        // Informasi produk yang dibeli
         Label infoLabel = new Label(barang.getNamaBarang());
         infoLabel.getStyleClass().add("qr-product-name");
 
         Label priceLabel = new Label(formatCurrency(barang.getHargaBarang()));
         priceLabel.getStyleClass().add("qr-price");
 
-        // QR Code image
+        // Gambar QR Code untuk pembayaran
         ImageView qrImageView = new ImageView();
         qrImageView.setFitWidth(320);
         qrImageView.setFitHeight(320);
         qrImageView.setPreserveRatio(true);
 
+        // Memuat gambar QR Code dari resources
         try {
             InputStream qrStream = getClass().getResourceAsStream("/images/qris_payment.png");
             if (qrStream != null) {
@@ -216,24 +228,25 @@ public class MainController {
             System.err.println("Error loading QR code image");
         }
 
-        // Instructions
+        // Instruksi untuk user
         Label instructionLabel = new Label("Scan QR Code di atas menggunakan aplikasi pembayaran Anda");
         instructionLabel.getStyleClass().add("qr-instruction");
         instructionLabel.setWrapText(true);
         instructionLabel.setMaxWidth(350);
 
-        // Buttons
+        // Tombol untuk verifikasi dan pembatalan
         Button verifyButton = new Button("✓ Verifikasi Pembayaran");
         verifyButton.getStyleClass().add("verify-button");
 
         Button cancelButton = new Button("✕ Batalkan Pesanan");
         cancelButton.getStyleClass().add("cancel-button");
 
-        // Button actions
+        // Event handler untuk tombol verifikasi
         verifyButton.setOnAction(e -> {
             handlePaymentVerification(qrStage, barang, qrBox, verifyButton, cancelButton);
         });
 
+        // Event handler untuk tombol batal dengan konfirmasi
         cancelButton.setOnAction(e -> {
             Optional<ButtonType> result = showConfirmation(
                 "Batalkan Pesanan",
@@ -246,6 +259,7 @@ public class MainController {
             }
         });
 
+        // Menambahkan semua komponen ke container
         qrBox.getChildren().addAll(titleLabel, infoLabel, priceLabel, qrImageView,
                                    instructionLabel, verifyButton, cancelButton);
 

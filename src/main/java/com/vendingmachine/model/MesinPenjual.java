@@ -4,12 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kelas MesinPenjual bertindak sebagai controller utama logika bisnis.
- * Mengelola inventaris barang dan riwayat transaksi.
- * Mendukung penyimpanan data persisten.
- *
- * @author Senior Java Developer
+ * Kelas model utama untuk sistem vending machine.
+ * Mengelola logika bisnis untuk operasi produk dan transaksi,
+ * termasuk manajemen inventori dan pemrosesan pembelian.
+ * 
+ * Fitur yang disediakan:
+ * - Manajemen daftar produk (CRUD operations)
+ * - Validasi dan pemrosesan transaksi pembelian
+ * - Manajemen stok produk
+ * - Riwayat transaksi
+ * - Integrasi dengan sistem persistensi data
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 2.0
+ * @since 2024
  */
 public class MesinPenjual {
 
@@ -53,7 +61,7 @@ public class MesinPenjual {
             throw new IllegalArgumentException("Barang tidak boleh null!");
         }
 
-        // Cek apakah ID barang sudah ada
+        // Periksa apakah ID barang sudah ada
         if (cariBarang(barang.getIdBarang()) != null) {
             throw new IllegalArgumentException("Barang dengan ID " + barang.getIdBarang() + " sudah ada!");
         }
@@ -100,7 +108,7 @@ public class MesinPenjual {
             throw new IllegalArgumentException("Barang dengan ID " + idBarang + " tidak ditemukan!");
         }
 
-        // Update semua atribut barang
+        // Perbarui semua atribut barang
         barang.setIdBarang(dataBaru.getIdBarang());
         barang.setNamaBarang(dataBaru.getNamaBarang());
         barang.setHargaBarang(dataBaru.getHargaBarang());
@@ -136,7 +144,7 @@ public class MesinPenjual {
      * @return List berisi semua barang
      */
     public List<Barang> getDaftarBarang() {
-        return new ArrayList<>(daftarBarang); // Return copy untuk enkapsulasi
+        return new ArrayList<>(daftarBarang); // Mengembalikan salinan untuk enkapsulasi
     }
 
     /**
@@ -145,7 +153,7 @@ public class MesinPenjual {
      * @return List berisi semua transaksi
      */
     public List<Transaksi> getRiwayatTransaksi() {
-        return new ArrayList<>(riwayatTransaksi); // Return copy untuk enkapsulasi
+        return new ArrayList<>(riwayatTransaksi); // Mengembalikan salinan untuk enkapsulasi
     }
 
     /**
@@ -173,31 +181,33 @@ public class MesinPenjual {
      * @throws IllegalStateException jika stok tidak tersedia
      */
     public void prosesPembelian(Barang barang) {
-        // Validasi barang
+        // Validasi parameter input tidak boleh null
         if (barang == null) {
             throw new IllegalArgumentException("Barang tidak boleh null!");
         }
 
-        // Validasi bahwa barang ada di inventaris
+        // Cari barang di inventaris untuk memastikan barang tersedia
         Barang barangDiInventaris = cariBarang(barang.getIdBarang());
         if (barangDiInventaris == null) {
             throw new IllegalArgumentException("Barang tidak ditemukan di inventaris!");
         }
 
-        // Validasi stok
+        // Periksa ketersediaan stok sebelum melakukan transaksi
         if (barangDiInventaris.getStokSekarang() <= 0) {
             throw new IllegalStateException("Stok barang " + barangDiInventaris.getNamaBarang() + " habis!");
         }
 
-        // Kurangi stok
+        // Kurangi stok barang sebanyak 1 unit
         barangDiInventaris.kurangiStok(1);
 
-        // Buat dan catat transaksi
+        // Buat objek transaksi baru untuk mencatat pembelian
         Transaksi transaksi = new Transaksi(barangDiInventaris, 1);
         transaksi.setStatus(Transaksi.StatusTransaksi.BERHASIL);
+        
+        // Tambahkan transaksi ke riwayat untuk tracking
         riwayatTransaksi.add(transaksi);
 
-        // Simpan data ke file (stok sudah berkurang)
+        // Simpan perubahan data ke file untuk persistensi
         saveData();
     }
 

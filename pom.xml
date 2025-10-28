@@ -75,6 +75,90 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- Maven Exec Plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <mainClass>com.vendingmachine.MainApp</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Javadoc Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <source>17</source>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <doctitle>PENShop Vending Machine API Documentation</doctitle>
+                    <windowTitle>PENShop Vending Machine API</windowTitle>
+                    <bottom>Copyright © 2024 PENShop. All rights reserved.</bottom>
+                    <author>true</author>
+                    <version>true</version>
+                    <use>true</use>
+                    <splitindex>true</splitindex>
+                    <show>private</show>
+                    <nohelp>false</nohelp>
+                    <detectJavaApiLink>true</detectJavaApiLink>
+                    <detectLinks>true</detectLinks>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <quiet>false</quiet>
+                    <verbose>true</verbose>
+                    <additionalJOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <source>17</source>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <doctitle>PENShop Vending Machine API Documentation</doctitle>
+                    <windowTitle>PENShop Vending Machine API</windowTitle>
+                    <bottom>Copyright © 2024 PENShop. All rights reserved.</bottom>
+                    <author>true</author>
+                    <version>true</version>
+                    <use>true</use>
+                    <splitindex>true</splitindex>
+                    <show>private</show>
+                    <nohelp>false</nohelp>
+                    <detectJavaApiLink>true</detectJavaApiLink>
+                    <detectLinks>true</detectLinks>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <quiet>false</quiet>
+                    <verbose>true</verbose>
+                    <additionalJOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

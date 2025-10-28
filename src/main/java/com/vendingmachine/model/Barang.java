@@ -3,12 +3,16 @@ package com.vendingmachine.model;
 import java.io.Serializable;
 
 /**
- * Kelas Barang merepresentasikan satu item produk yang dijual dalam vending machine.
- * Mengikuti prinsip enkapsulasi dengan semua atribut bersifat private.
- * Implements Serializable untuk mendukung penyimpanan data persisten.
- *
- * @author Senior Java Developer
+ * Kelas model untuk merepresentasikan produk dalam vending machine.
+ * Menyimpan informasi lengkap tentang produk termasuk identitas,
+ * nama, harga, stok, dan path gambar.
+ * 
+ * Kelas ini mengimplementasikan Serializable untuk mendukung
+ * penyimpanan data persisten ke file.
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 2.0
+ * @since 2024
  */
 public class Barang implements Serializable {
 
@@ -173,4 +177,4 @@ public class Barang implements Serializable {
         return String.format("Barang[ID=%s, Nama=%s, Harga=Rp %.2f, Stok=%d]",
                            idBarang, namaBarang, hargaBarang, stokSekarang);
     }
-}
+}

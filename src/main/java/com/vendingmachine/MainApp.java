@@ -11,11 +11,20 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Aplikasi utama Vending Machine.
- * Entry point untuk aplikasi JavaFX.
- *
- * @author Senior Java Developer
+ * Kelas utama aplikasi Vending Machine (Mesin Penjual Otomatis).
+ * Aplikasi ini menggunakan JavaFX untuk antarmuka pengguna dan menyediakan
+ * fitur-fitur seperti pembelian produk, manajemen admin, dan riwayat transaksi.
+ * 
+ * Fitur utama:
+ * - Tampilan produk dengan gambar dan informasi lengkap
+ * - Sistem pembayaran QRIS
+ * - Panel admin untuk manajemen produk
+ * - Riwayat transaksi dengan detail lengkap
+ * - Persistensi data menggunakan serialisasi
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 1.0
+ * @since 2024
  */
 public class MainApp extends Application {
 
@@ -29,27 +38,27 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Inisialisasi MesinPenjual (akan auto-load dari file jika ada)
+            // Inisialisasi MesinPenjual (akan memuat otomatis dari file jika ada)
             mesinPenjual = new MesinPenjual();
 
-            // Load data awal hanya jika belum ada data tersimpan
+            // Muat data awal hanya jika belum ada data tersimpan
             if (mesinPenjual.getJumlahJenisBarang() == 0) {
                 loadInitialData();
             }
 
-            // Load FXML
+            // Muat file FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vendingmachine/MainView.fxml"));
             Parent root = loader.load();
 
-            // Set MesinPenjual ke controller
+            // Atur MesinPenjual ke controller
             MainController mainController = loader.getController();
             mainController.setMesinPenjual(mesinPenjual);
 
-            // Setup scene
+            // Atur scene
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-            // Setup stage
+            // Atur stage
             primaryStage.setTitle("Vending Machine - QR Payment System");
             primaryStage.setScene(scene);
             primaryStage.setResizable(true);
@@ -129,3 +138,4 @@ public class MainApp extends Application {
         launch(args);
     }
 }
+

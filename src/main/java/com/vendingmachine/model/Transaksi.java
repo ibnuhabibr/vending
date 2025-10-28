@@ -5,30 +5,61 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Kelas Transaksi merepresentasikan satu record pembelian.
- * Setiap transaksi mencatat barang yang dibeli, kuantitas, status, dan waktu transaksi.
- *
- * @author Senior Java Developer
+ * Kelas model untuk merepresentasikan transaksi pembelian dalam vending machine.
+ * Setiap transaksi mencatat informasi lengkap tentang pembelian termasuk
+ * produk yang dibeli, kuantitas, status, waktu, dan total harga.
+ * 
+ * Kelas ini mengimplementasikan Serializable untuk mendukung
+ * penyimpanan riwayat transaksi ke file.
+ * 
+ * @author Tim Pengembang Vending Machine
  * @version 2.0
+ * @since 2024
  */
 public class Transaksi implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Enum untuk status transaksi
+     * Enum untuk status transaksi dalam sistem vending machine.
+     * Menentukan kondisi akhir dari sebuah transaksi pembelian.
+     * 
+     * Status yang tersedia:
+     * - BERHASIL: Transaksi berhasil diselesaikan
+     * - BATAL: Transaksi dibatalkan oleh sistem atau pengguna
+     * - PENDING: Transaksi sedang dalam proses
+     * 
+     * @author Tim Pengembang Vending Machine
+     * @version 1.0
+     * @since 2024
      */
     public enum StatusTransaksi {
+        /** Transaksi berhasil diselesaikan */
         BERHASIL("Berhasil"),
+        
+        /** Transaksi dibatalkan oleh sistem atau pengguna */
         BATAL("Batal"),
+        
+        /** Transaksi sedang dalam proses */
         PENDING("Pending");
 
+        /** Nama tampilan yang user-friendly untuk status */
         private final String displayName;
 
+        /**
+         * Konstruktor untuk StatusTransaksi.
+         * 
+         * @param displayName Nama tampilan yang akan ditampilkan ke pengguna
+         */
         StatusTransaksi(String displayName) {
             this.displayName = displayName;
         }
 
+        /**
+         * Mendapatkan nama tampilan yang user-friendly untuk status transaksi.
+         * 
+         * @return String nama tampilan status transaksi
+         */
         public String getDisplayName() {
             return displayName;
         }

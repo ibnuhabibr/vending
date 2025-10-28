@@ -17,13 +17,25 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Controller untuk mengelola tampilan riwayat transaksi.
- * Menampilkan daftar semua transaksi yang telah dilakukan dalam bentuk tabel.
+ * Menampilkan daftar semua transaksi yang telah dilakukan
+ * dalam format tabel dengan informasi lengkap.
+ * 
+ * Fitur yang dikelola:
+ * - Tampilan tabel riwayat transaksi
+ * - Navigasi ke detail transaksi individual
+ * - Kembali ke tampilan utama
+ * - Refresh data transaksi
+ * 
+ * @author Tim Pengembang Vending Machine
+ * @version 1.0
+ * @since 2024
  */
 public class TransactionHistoryController implements Initializable {
 
@@ -48,20 +60,27 @@ public class TransactionHistoryController implements Initializable {
     private ObservableList<Transaksi> transactionData;
     private NumberFormat currencyFormat;
 
+    /**
+     * Inisialisasi controller dan setup komponen UI.
+     * Dipanggil otomatis setelah FXML dimuat.
+     *
+     * @param location URL lokasi FXML
+     * @param resources ResourceBundle untuk lokalisasi
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize currency formatter
+        // Inisialisasi formatter mata uang
         currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
         currencyFormat.setMaximumFractionDigits(0);
         
-        // Setup table columns
+        // Atur kolom tabel
         setupTableColumns();
         
-        // Initialize transaction data
+        // Inisialisasi data transaksi
         transactionData = FXCollections.observableArrayList();
         transactionTable.setItems(transactionData);
         
-        // Setup table selection listener for double-click to view details
+        // Atur listener seleksi tabel untuk double-click melihat detail
         transactionTable.setRowFactory(tv -> {
             TableRow<Transaksi> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -74,7 +93,7 @@ public class TransactionHistoryController implements Initializable {
     }
 
     /**
-     * Setup kolom-kolom tabel transaksi.
+     * Mengatur kolom-kolom tabel transaksi dan event handler.
      */
     private void setupTableColumns() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("idTransaksi"));
@@ -117,7 +136,7 @@ public class TransactionHistoryController implements Initializable {
             )
         );
         
-        // Set custom cell factory for status column to add styling
+        // Atur custom cell factory untuk kolom status untuk menambahkan styling
         statusColumn.setCellFactory(column -> new TableCell<Transaksi, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -140,7 +159,9 @@ public class TransactionHistoryController implements Initializable {
     }
 
     /**
-     * Set referensi ke MesinPenjual dan load data transaksi.
+     * Mengatur referensi MesinPenjual dan memuat data transaksi.
+     *
+     * @param mesinPenjual Instance MesinPenjual yang berisi data transaksi
      */
     public void setMesinPenjual(MesinPenjual mesinPenjual) {
         this.mesinPenjual = mesinPenjual;
@@ -149,30 +170,30 @@ public class TransactionHistoryController implements Initializable {
     }
 
     /**
-     * Load data transaksi ke dalam tabel.
+     * Memuat data transaksi dari MesinPenjual ke dalam tabel.
      */
     private void loadTransactionData() {
         if (mesinPenjual != null) {
-            transactionData.clear();
-            transactionData.addAll(mesinPenjual.getDaftarTransaksi());
+            transactionData.setAll(mesinPenjual.getRiwayatTransaksi());
         }
     }
 
     /**
-     * Update statistik transaksi.
+     * Memperbarui statistik transaksi yang ditampilkan di UI.
+     * Menghitung total transaksi, pendapatan, dan transaksi sukses.
      */
     private void updateStatistics() {
         if (mesinPenjual == null) return;
         
-        var transactions = mesinPenjual.getDaftarTransaksi();
-        int totalTransactions = transactions.size();
+        List<Transaksi> allTransactions = mesinPenjual.getRiwayatTransaksi();
+        int totalTransactions = allTransactions.size();
         
-        double totalRevenue = transactions.stream()
+        double totalRevenue = allTransactions.stream()
             .filter(t -> t.getStatus() == Transaksi.StatusTransaksi.BERHASIL)
             .mapToDouble(Transaksi::getTotalHarga)
             .sum();
-        
-        long successfulTransactions = transactions.stream()
+            
+        long successfulTransactions = allTransactions.stream()
             .filter(t -> t.getStatus() == Transaksi.StatusTransaksi.BERHASIL)
             .count();
         
@@ -182,31 +203,39 @@ public class TransactionHistoryController implements Initializable {
     }
 
     /**
-     * Format mata uang Indonesia.
+     * Memformat angka menjadi format mata uang Rupiah.
+     *
+     * @param amount Jumlah yang akan diformat
+     * @return String dalam format mata uang Rupiah
      */
     private String formatCurrency(double amount) {
-        return String.format("Rp %.0f", amount);
+        return currencyFormat.format(amount);
     }
 
     /**
-     * Menampilkan detail transaksi dalam dialog.
+     * Menampilkan detail transaksi dalam window terpisah.
+     *
+     * @param transaksi Objek Transaksi yang akan ditampilkan detailnya
      */
     private void showTransactionDetail(Transaksi transaksi) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Detail Transaksi");
-        alert.setHeaderText("Informasi Lengkap Transaksi");
-        alert.setContentText(transaksi.getDetailTransaksi());
-        
-        // Style the dialog
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        dialogPane.getStyleClass().add("transaction-detail-dialog");
-        
-        alert.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vendingmachine/TransactionDetailView.fxml"));
+            Parent root = loader.load();
+            
+            TransactionDetailController controller = loader.getController();
+            controller.setTransactionData(transaksi, transaksi.getBarangYangDibeli());
+            
+            Stage stage = new Stage();
+            stage.setTitle("Detail Transaksi - " + transaksi.getIdTransaksi());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showError("Error", "Gagal membuka detail transaksi: " + e.getMessage());
+        }
     }
 
     /**
-     * Handle tombol kembali ke main view.
+     * Menangani aksi tombol kembali ke menu utama.
      */
     @FXML
     private void handleBackButton() {
@@ -214,40 +243,46 @@ public class TransactionHistoryController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vendingmachine/MainView.fxml"));
             Parent root = loader.load();
             
+            // Atur MesinPenjual ke MainController
             MainController mainController = loader.getController();
             mainController.setMesinPenjual(mesinPenjual);
             
+            // Ganti scene
             Stage stage = (Stage) backButton.getScene().getWindow();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("PENShop - Vending Machine");
+            stage.setTitle("Vending Machine - QR Payment System");
+            
         } catch (IOException e) {
-            showError("Error", "Gagal kembali ke halaman utama: " + e.getMessage());
+            showError("Error", "Gagal kembali ke menu utama: " + e.getMessage());
         }
     }
 
     /**
-     * Handle refresh data transaksi.
+     * Menangani aksi tombol refresh untuk memuat ulang data transaksi.
      */
     @FXML
     private void handleRefresh() {
-        loadTransactionData();
-        updateStatistics();
-        showInfo("Refresh", "Data transaksi berhasil diperbarui!");
+        if (mesinPenjual != null) {
+            loadTransactionData();
+            updateStatistics();
+            showInfo("Refresh", "Data transaksi berhasil dimuat ulang!");
+        }
     }
 
     /**
-     * Handle hapus semua riwayat transaksi.
+     * Menangani aksi tombol hapus riwayat transaksi.
+     * Menampilkan konfirmasi sebelum menghapus semua data.
      */
     @FXML
     private void handleClearHistory() {
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Konfirmasi Hapus");
-        confirmAlert.setHeaderText("Hapus Semua Riwayat Transaksi");
-        confirmAlert.setContentText("Apakah Anda yakin ingin menghapus semua riwayat transaksi? Tindakan ini tidak dapat dibatalkan.");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Konfirmasi Hapus");
+        alert.setHeaderText("Hapus Semua Riwayat Transaksi");
+        alert.setContentText("Apakah Anda yakin ingin menghapus semua riwayat transaksi? Tindakan ini tidak dapat dibatalkan.");
         
-        Optional<ButtonType> result = confirmAlert.showAndWait();
+        Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             mesinPenjual.clearTransactionHistory();
             loadTransactionData();
@@ -258,6 +293,9 @@ public class TransactionHistoryController implements Initializable {
 
     /**
      * Menampilkan dialog error.
+     *
+     * @param title Judul dialog
+     * @param message Pesan error yang akan ditampilkan
      */
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -269,6 +307,9 @@ public class TransactionHistoryController implements Initializable {
 
     /**
      * Menampilkan dialog informasi.
+     *
+     * @param title Judul dialog
+     * @param message Pesan informasi yang akan ditampilkan
      */
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
