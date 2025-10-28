@@ -1,0 +1,52 @@
+-Xdoclint:none
+@options
+@packages
+@argfile
+--class-path
+'C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-controls/21.0.1/javafx-controls-21.0.1.jar;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-graphics/21.0.1/javafx-graphics-21.0.1.jar;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-base/21.0.1/javafx-base-21.0.1.jar;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-fxml/21.0.1/javafx-fxml-21.0.1.jar'
+--module-path
+'C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-base/21.0.1/javafx-base-21.0.1-win.jar;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-controls/21.0.1/javafx-controls-21.0.1-win.jar;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-fxml/21.0.1/javafx-fxml-21.0.1-win.jar;C:/Users/Ibnu Habib/Desktop/vending_machine/vending_machine/target/classes;C:/Users/Ibnu Habib/.m2/repository/org/openjfx/javafx-graphics/21.0.1/javafx-graphics-21.0.1-win.jar'
+--patch-module
+com.vendingmachine='C:/Users/Ibnu Habib/Desktop/vending_machine/vending_machine/src/main/java'
+-encoding
+'UTF-8'
+-private
+-source
+'17'
+--module-source-path
+'C:/Users/Ibnu Habib/Desktop/vending_machine/vending_machine/target/site/apidocs/src'
+-verbose
+-author
+-bottom
+'Copyright © 2024 PENShop. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/Ibnu Habib/Desktop/vending_machine/vending_machine/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'PENShop Vending Machine API Documentation'
+-splitindex
+-use
+-version
+-windowtitle
+'PENShop 1.0.0 API'
+com.vendingmachine.controller
+com.vendingmachine
+com.vendingmachine.model
+'C:/Users/Ibnu Habib/Desktop/vending_machine/vending_machine/src/main/java/module-info.java'
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\allclasses-index.html = 1761675969592
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\allpackages-index.html = 1761675969597
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\constant-values.html = 1761675969370
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\element-list = 1761675969113
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\help-doc.html = 1761675969781
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\index.html = 1761675969774
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\member-search-index.js = 1761675969606
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\module-search-index.js = 1761675969599
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\overview-tree.html = 1761675969554
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\package-search-index.js = 1761675969601
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\search.html = 1761675969767
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\serialized-form.html = 1761675969393
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\tag-search-index.js = 1761675969607
+C:\Users\Ibnu Habib\Desktop\vending_machine\vending_machine\target\site\apidocs\type-search-index.js = 1761675969603
