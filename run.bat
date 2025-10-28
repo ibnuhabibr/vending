@@ -15,7 +15,7 @@ REM Pindah ke direktori script
 cd /d "%~dp0"
 
 REM Jalankan aplikasi menggunakan Maven
-call mvn clean javafx:run
+call mvn clean compile exec:java
 
 REM Jika gagal, tampilkan pesan
 if errorlevel 1 (
